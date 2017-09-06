@@ -8,11 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
+ 
 namespace Pho\Kernel\Services\Index\Adapters;
 
 use Pho\Kernel\Kernel;
 use Pho\Kernel\Services\ServiceInterface;
+use Pho\Kernel\Services\Index\IndexInterface;
+use Pho\Lib\Graph\EntityInterface;
 use Elasticsearch\ClientBuilder;
 
 /**
