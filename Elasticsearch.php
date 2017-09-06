@@ -12,7 +12,6 @@
 namespace Pho\Kernel\Services\Index\Adapters;
 
 use Pho\Kernel\Kernel;
-use Pho\Kernel\Services\Index\Index;
 use Pho\Kernel\Services\ServiceInterface;
 use Elasticsearch\ClientBuilder;
 
@@ -24,10 +23,24 @@ use Elasticsearch\ClientBuilder;
  */
 class Elasticsearch implements IndexInterface, ServiceInterface
 {
-    private $kernel;
-    public  $client;
+     /**
+     * Pho-kernel 
+     * @var \Pimple
+     */
+    protected $kernel;
+
+    /**
+     * Elasticsearch php sdk client connect 
+     * @var \Elasticsearch\Client
+     */
+    protected $client;
+
+    /**
+     * default index name for pho-indexing
+     * @var string
+     */
     private $dbname    = 'phonetworks';
-    private $tablename = 'phoindex';
+
 
     /**
      * Setup function.
@@ -39,7 +52,6 @@ class Elasticsearch implements IndexInterface, ServiceInterface
     {
         $this->kernel = $kernel;
         $this->dbname = getenv('INDEX_DB')?: $this->dbname;
-        $this->tablename = getenv('INDEX_TABLE')?: $this->tablename;
 
         $host         = [$params['host'] ?: getenv('INDEX_URL') ?: 'http://127.0.0.1:9200/'];
         $client = new \Elasticsearch\ClientBuilder($host);
@@ -227,7 +239,7 @@ class Elasticsearch implements IndexInterface, ServiceInterface
         return $type;
     }
 
-    public function remapReturn(array $results)
+    private function remapReturn(array $results)
     {
         $return = array();
         if (isset($results['hits']) && isset($results['hits']['hits'])) {
@@ -253,7 +265,7 @@ class Elasticsearch implements IndexInterface, ServiceInterface
         return $return;
     }
 
-    public function getIdsList($founded): array
+    private function getIdsList($founded): array
     {
         $ids = [];
         foreach ($founded as $entitys) {
@@ -263,7 +275,7 @@ class Elasticsearch implements IndexInterface, ServiceInterface
         return $ids;
     }
 
-    public function createQuery(string $type = null, string $id = null, $where = []): array
+    private function createQuery(string $type = null, string $id = null, $where = []): array
     {
         $query = ['index' => $this->dbname];
         if ($type) {
